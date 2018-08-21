@@ -8,8 +8,14 @@ GAME RULES:
 - The first player to reach 100 points on GLOBAL score wins the game
 
 */
+/*
 
-var scores, roundScore, activePlayer, gamePlaying;
+1. Player looses all his scores if two 6's are rolled consecutively.
+2. Take Winning Score as Input
+
+*/
+
+var scores, roundScore, activePlayer, gamePlaying, lastDice;
 
 init();
 
@@ -25,7 +31,13 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
         diceDOM.src = 'dice-' + dice + '.png';
     
         // Update the Round Score
-        if(dice != 1){
+        if (dice === 6 && lastDice === 6) {
+            
+            scores[activePlayer] = 0;
+            document.querySelector('#score-' + activePlayer).textContent = '0';
+            nextPlayer();
+            
+        } else if(dice != 1){
             // Add Score
             roundScore += dice;
             document.querySelector('#current-' + activePlayer).textContent = roundScore;
@@ -34,6 +46,8 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
             nextPlayer();
         
         }   
+        
+        lastDice = dice;
 
     }
 });
@@ -47,9 +61,19 @@ document.querySelector('.btn-hold'). addEventListener('click', function(){
     
         // Update UI
         document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
+        
+        // Winning Score
+        var input = document.querySelector('.final-score').value;
+        var winningScore;
+        
+        if(input) {
+            winningScore = input;
+        } else {
+            winningScore = 100;
+        }
     
         //Check If player has won the game
-        if(scores[activePlayer] >= 100){
+        if(scores[activePlayer] >= winningScore){
         
             document.querySelector('#name-' + activePlayer).textContent = 'WINNER';
             document.querySelector('.dice').style.display = 'none';
